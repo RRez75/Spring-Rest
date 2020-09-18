@@ -23,30 +23,25 @@ public class Autorizacao {
     @Column(name = "aut_nome")
     private String nome;
 
-
     @ManyToMany(fetch = FetchType.LAZY, mappedBy = "autorizacoes")
-    private Set<Usuario> usuarios;
+    private Set<Usuario> usuarios; 
 
     public Long getId(){
-        return this.id;
+        return  this.id;
     }
-
     public void setId(Long id){
         this.id = id;
     }
-
     public String getNome(){
-        return this.nome;
+        return  this.nome;
     }
-
     public void setNome(String nome){
         this.nome = nome;
     }
-
     public Set<Usuario> getUsuarios(){
         return this.usuarios;
     }
-    public void setUsuario(Set<Usuario> usuarios){
+    public void setUsuarios(Set<Usuario> usuarios){
         this.usuarios = usuarios;
     }
 }

@@ -1,7 +1,5 @@
 package br.gov.sp.fatec.springbootapp.entity;
 
-import static javax.persistence.FetchType.EAGER;
-
 import java.util.Set;
 
 import javax.persistence.Column;
