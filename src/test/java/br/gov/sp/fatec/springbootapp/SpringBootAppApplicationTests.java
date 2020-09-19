@@ -15,7 +15,7 @@ import br.gov.sp.fatec.springbootapp.entity.Autorizacao;
 import br.gov.sp.fatec.springbootapp.entity.Usuario;
 import br.gov.sp.fatec.springbootapp.repository.AutorizacaoRepository;
 import br.gov.sp.fatec.springbootapp.repository.UsuarioRepository;
-
+import br.gov.sp.fatec.springbootapp.service.SegurancaService;
 
 
 @SpringBootTest //inicia a aplicacao
@@ -30,6 +30,9 @@ class SpringBootAppApplicationTests {
     
     @Autowired
     private AutorizacaoRepository autRepo; 
+
+    @Autowired
+    private SegurancaService segService;
     
     @Test
 	void contextLoads() {
@@ -68,7 +71,6 @@ class SpringBootAppApplicationTests {
         Usuario usuario = usuarioRepo.findById(42L).get();
         assertEquals("ROLE_ADMIN", usuario.getAutorizacoes().iterator().next().getNome());
 
-
     }
     @Test 
     void testaUsuario(){
@@ -81,9 +83,16 @@ class SpringBootAppApplicationTests {
         List<Usuario> usuarios = usuarioRepo.findByNomeContainsIgnoreCase("A");
         assertFalse(usuarios.isEmpty());
     }
+
     @Test 
     void testaBuscaUsuarioNome(){
         Usuario usuario = usuarioRepo.findByNome("Rafael");
+        assertNotNull(usuario);
+    }
+
+    @Test 
+    void testaBuscaUsuarioNomeQuery(){
+        Usuario usuario = usuarioRepo.buscaUsuarioPorNome("Rafael");
         assertNotNull(usuario);
     }
 
@@ -92,10 +101,29 @@ class SpringBootAppApplicationTests {
         Usuario usuario = usuarioRepo.findByNomeAndSenha("Rafael", "12345"); 
         assertNotNull(usuario);   
     }
+
+    @Test
+    void testaBuscaUsuarioNomeSenhaQuery(){
+        Usuario usuario = usuarioRepo.buscaUsuarioPorNomeESenha("Rafael", "12345"); 
+        assertNotNull(usuario);   
+    }
+    
     @Test 
     void testaBuscaUsuarioNomeAutorizacao(){
         List<Usuario> usuarios = usuarioRepo.findByAutorizacoesNome("ROLE_ADMIN");
         assertFalse(usuarios.isEmpty());
+    }
+
+    @Test 
+    void testaBuscaUsuarioNomeAutorizacaoQuery(){
+        List<Usuario> usuarios = usuarioRepo.buscaPorNomeAutorizacao("ROLE_ADMIN");
+        assertFalse(usuarios.isEmpty());
+    }
+
+    @Test
+    void testaServicoCriaUsuario(){
+        Usuario usuario = segService.criarUsuario("normal", "senha123", "ROLE_USUARIO");
+        assertNotNull(usuario);
     }
 
 }
