@@ -3,11 +3,8 @@ package br.gov.sp.fatec.springbootapp;
 import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
 
-import java.sql.Date;
-import java.sql.Time;
 import java.util.HashSet;
 import java.util.List;
-import java.util.LinkedList;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -16,15 +13,9 @@ import org.springframework.transaction.annotation.Transactional;
 
 import br.gov.sp.fatec.springbootapp.entity.Autorizacao;
 import br.gov.sp.fatec.springbootapp.entity.Usuario;
-import br.gov.sp.fatec.springbootapp.entity.Notificacao;
-import br.gov.sp.fatec.springbootapp.entity.Conversa;
 import br.gov.sp.fatec.springbootapp.repository.AutorizacaoRepository;
 import br.gov.sp.fatec.springbootapp.repository.UsuarioRepository;
-import br.gov.sp.fatec.springbootapp.repository.NotificacaoRepository;
-import br.gov.sp.fatec.springbootapp.service.NotificacaoService;
 import br.gov.sp.fatec.springbootapp.service.SegurancaService;
-import br.gov.sp.fatec.springbootapp.repository.ConversasRepository;
-
 
 
 @SpringBootTest //inicia a aplicacao
@@ -42,88 +33,15 @@ class SpringBootAppApplicationTests {
 
     @Autowired
     private SegurancaService segService;
-
-    @Autowired
-    private NotificacaoRepository notRepo;
-
-    @Autowired
-    private NotificacaoService notService;
-
-    @Autowired
-    private ConversasRepository conversaRepo;
-
-    
     
     @Test
-    void testeBuscarConversasPorIdUsuario(){
-        List<Conversa> conversas = conversaRepo.buscaConversasPorUsuario(1L);
-
-        assertFalse(conversas.isEmpty());
+	void contextLoads() {
     }
-
-    @Test
-    void testeCriarConversa(){
-        Conversa conversa = new Conversa();
-        conversa.setStatus(0L);
-        conversa.setOrigem("painel");
-        conversa.setConteudo("String json");
-        conversa.setData(new Date(2020,11,2));
-        conversa.setInicio(new Time(21,11,2));
-        conversa.setFim(new Time(21,11,2));
-        conversa.setPartipante1Id(1L);
-        conversa.setPartipante2Id(2L);
-        conversaRepo.save(conversa);
-        assertNotNull(conversa.getId());
-    }
-
-    @Test
-    void testeBuscarConversasVistaDeChat(){
-        List<Conversa> conversas = conversaRepo.buscaConversasClienteAtivas();
-
-        assertFalse(conversas.isEmpty());
-    }
-
-    @Test
-    void testeBuscarConversasHistorico(){
-        List<Conversa> conversas = conversaRepo.buscaConversasHistorico();
-
-        assertFalse(conversas.isEmpty());
-    }
-
-    //Serviço que cria notificações
-    @Test
-    void testeCriarNotificacao(){
-        Notificacao notificacao = notService.criarNotificacao("Fabiola","Arthur","Teste", "teste conteudo");
-        assertNotNull(notificacao.getId());
-    }
-
-    //Transação com duas inserções no banco de dados
-    @Test
-    void testeCriarNotificacaoDupla(){
-        LinkedList<Notificacao> notificacoes= notService.criarNotificacaoDupla("Fabiola","Arthur","Arthur","Teste", "teste conteudo");
-        assertNotNull(notificacoes.isEmpty());
-    }
-    
-    //Consulto com dois parametros Id do remetente e titulo da notificacao
-    @Test
-    void BuscarNotificacaoPorTituloRemetente(){
-        List<Notificacao> notificacao = notRepo.findByTituloERemetente("Teste 2", 2L);
-        assertFalse(notificacao.isEmpty());
-    }
-
-    //Consulta com join
-    @Test 
-    void testeBuscaNotificacoesPorIdUsuario(){
-        List<Notificacao> notificacoes = notRepo.buscaPorNomeUsuario(1L);
-        assertFalse(notificacoes.isEmpty());
-    }
-
     @Test
     void testaInsercao(){
         Usuario usuario = new  Usuario();
-        usuario.setNome("Teste23");
-        usuario.setSenha("senha");
-        usuario.setAvatar("base64 image");
+        usuario.setNome("Rafaelzi");
+        usuario.setSenha("12345");
         usuario.setAutorizacoes(new HashSet<Autorizacao>());
         Autorizacao aut = new Autorizacao();
         aut.setNome("ROLE_USUARIO");
@@ -138,7 +56,6 @@ class SpringBootAppApplicationTests {
         Usuario usuario = new  Usuario();
         usuario.setNome("Usuario2");
         usuario.setSenha("senha");
-        usuario.setAvatar("base64 image");
         usuarioRepo.save(usuario);
         Autorizacao aut = new Autorizacao();
         aut.setNome("ROLE_USUARIO2");
@@ -151,15 +68,14 @@ class SpringBootAppApplicationTests {
        
     @Test
     void testaAutorizacao(){
-        Usuario usuario = usuarioRepo.findById(1L).get();
+        Usuario usuario = usuarioRepo.findById(42L).get();
         assertEquals("ROLE_ADMIN", usuario.getAutorizacoes().iterator().next().getNome());
-
 
     }
     @Test 
     void testaUsuario(){
         Autorizacao aut = autRepo.findById(1L).get();
-        assertEquals("Fabiola", aut.getUsuarios().iterator().next().getNome());
+        assertEquals("Rafael", aut.getUsuarios().iterator().next().getNome());
     } 
 
     @Test 
@@ -167,33 +83,37 @@ class SpringBootAppApplicationTests {
         List<Usuario> usuarios = usuarioRepo.findByNomeContainsIgnoreCase("A");
         assertFalse(usuarios.isEmpty());
     }
+
     @Test 
     void testaBuscaUsuarioNome(){
-        Usuario usuario = usuarioRepo.findByNome("Fabiola");
+        Usuario usuario = usuarioRepo.findByNome("Rafael");
         assertNotNull(usuario);
     }
-     @Test 
+
+    @Test 
     void testaBuscaUsuarioNomeQuery(){
-        Usuario usuario = usuarioRepo.buscaUsuarioPorNome("Fabiola");
+        Usuario usuario = usuarioRepo.buscaUsuarioPorNome("Rafael");
         assertNotNull(usuario);
     }
 
     @Test
     void testaBuscaUsuarioNomeSenha(){
-        Usuario usuario = usuarioRepo.findByNomeAndSenha("Fabiola", "12345"); 
+        Usuario usuario = usuarioRepo.findByNomeAndSenha("Rafael", "12345"); 
         assertNotNull(usuario);   
     }
+
     @Test
     void testaBuscaUsuarioNomeSenhaQuery(){
-        Usuario usuario = usuarioRepo.buscaUsuaioPorNomeESenha("Fabiola", "12345"); 
+        Usuario usuario = usuarioRepo.buscaUsuarioPorNomeESenha("Rafael", "12345"); 
         assertNotNull(usuario);   
     }
+    
     @Test 
     void testaBuscaUsuarioNomeAutorizacao(){
         List<Usuario> usuarios = usuarioRepo.findByAutorizacoesNome("ROLE_ADMIN");
         assertFalse(usuarios.isEmpty());
     }
-    
+
     @Test 
     void testaBuscaUsuarioNomeAutorizacaoQuery(){
         List<Usuario> usuarios = usuarioRepo.buscaPorNomeAutorizacao("ROLE_ADMIN");
@@ -202,7 +122,7 @@ class SpringBootAppApplicationTests {
 
     @Test
     void testaServicoCriaUsuario(){
-        Usuario usuario = segService.criarUsuario("normal", "senha123","base64 image", "ROLE_USUARIO");
+        Usuario usuario = segService.criarUsuario("normal", "senha123", "ROLE_USUARIO");
         assertNotNull(usuario);
     }
 

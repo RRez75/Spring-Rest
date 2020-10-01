@@ -19,10 +19,10 @@ public class Autorizacao {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "aut_id")
     private Long id;
-    
+
     @Column(name = "aut_nome")
     private String nome;
-    
+
     @ManyToMany(fetch = FetchType.LAZY, mappedBy = "autorizacoes")
     private Set<Usuario> usuarios; 
 
