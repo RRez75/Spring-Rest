@@ -16,6 +16,11 @@ import javax.persistence.OneToMany;
 import javax.persistence.*;
 import javax.persistence.CascadeType;
 import javax.persistence.Table;
+
+import com.fasterxml.jackson.annotation.JsonView;
+
+import br.gov.sp.fatec.springbootapp.controller.View;
+
 import java.io.Serializable;
 
 
@@ -23,11 +28,13 @@ import java.io.Serializable;
 @Table(name = "usr_usuario")
 public class Usuario implements Serializable{
 
+    @JsonView(View.UsuarioCompleto.class)
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "usr_id")
     private Long id;
     
+    @JsonView({View.UsuarioResumo.class, View.AutorizacaoResumo.class})
     @Column(name = "usr_nome")
     private String nome;
 
@@ -37,11 +44,12 @@ public class Usuario implements Serializable{
     @Column(name = "usr_senha")
     private String senha;
 
+    @JsonView(View.UsuarioResumo.class)
     @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(name = "uau_usuario_autorizacao",
         joinColumns = {@JoinColumn(name = "usr_id")},
         inverseJoinColumns = {@JoinColumn(name = "aut_id")}
-        )
+    )
 
 
 
